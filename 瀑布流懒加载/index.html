@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>瀑布流懒加载</title>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        .boxAll {
+            position: relative;
+        }
+        .box {
+            float: left;
+            padding:4px;
+        }
+        .boxImg {
+        }
+        .boxImg img {
+            width: 220px;
+        }
+        @keyframes big {
+            from{opacity: 0}
+            to{opacity: 1}
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <div class="boxAll">
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/1.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/2.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/3.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/4.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/5.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/6.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/7.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/8.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/9.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/10.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/1.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/2.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/3.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/4.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/5.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/6.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/7.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/1.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/2.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/3.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/4.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/5.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/6.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/7.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/8.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/9.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/10.jpg">
+                </div>
+            </div>
+            <div class="box">
+                <div class="boxImg">
+                    <img src="images/1.jpg" data-src="images/1.jpg">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var oContent = document.getElementById('content');
+        var screenHeight = document.documentElement.clientHeight;
+        var oBox = getClassName('box');
+        var oBoxAll = getClassName('boxAll')[0];
+        // 页面加载
+        window.addEventListener('load', function () {
+            loadImg(oBox);
+            moveCent(oBoxAll,oBox);
+        });
+        // 滚动监听
+        window.addEventListener('scroll',function(){
+            moveCent(oBoxAll,oBox);
+            loadImg(oBox);
+
+        });
+        // 瀑布流排版
+        function moveCent (parent,childArr) {
+            var oBoxArr = [];
+            var oBoxAll = parent;
+            var oBOX = childArr;
+            var oLength = ~~(document.documentElement.clientWidth / oBOX[0].offsetWidth);//~~向下取整
+            oBoxAll.style.cssText = "width:"+ oLength*oBOX[0].offsetWidth+"px;margin:auto;";
+            // for(var i=0;i<oBOX.length;i++){
+            //     if(i<oLength){
+            //         oBoxArr.push(oBOX[i].offsetHeight);
+            //     }else{
+            //         var minBox = getMin(oBoxArr).val
+            //         var minIndex = getMin(oBoxArr).index;
+            //         oBOX[i].style.cssText += "position:absolute;top:"+ minBox +"px;left:"+ minIndex*oBOX[0].offsetWidth +"px";
+            //         oBoxArr[minIndex] += oBOX[i].offsetHeight;
+            //     }
+            //
+            // }
+            [].forEach.call(oBOX,function(btn,i){
+                if(i<oLength){
+                    oBoxArr.push(oBOX[i].offsetHeight);
+                }else{
+                    var minBox = getMin(oBoxArr).val
+                    var minIndex = getMin(oBoxArr).index;
+                    oBOX[i].style.cssText += "position:absolute;top:"+ minBox +"px;left:"+ minIndex*oBOX[0].offsetWidth +"px";
+                    oBoxArr[minIndex] += oBOX[i].offsetHeight;
+                }
+            })
+        }
+        // 求最小值和序号
+        function getMin (arr) {
+            return arr.reduce(function(a,b,index){
+                    if(b<a.val){
+                        a.val = b;
+                        a.index = index;
+                    }
+                    return a
+                },{val:arr[0],index:0})
+        }
+        // 封装获取className的方法
+        function getClassName (name) {
+            var nameArr = [];
+            var oName = oContent.getElementsByTagName('*');
+            [].forEach.call(oName, function (btn) {
+                if(btn.className == name){
+                    nameArr.push(btn);
+                }
+            })
+            return nameArr
+        }
+        // 懒加载
+        function loadImg(childArr){
+            var oBOX = childArr;
+            for(var i = 0;i<oBOX.length;i++){
+                var oAi = oBOX[i].getElementsByTagName('img')[0];
+                if(isVisble(oBOX[i])){
+                    oAi.src = oAi.dataset.src;
+                    oBOX[i].style.cssText += "animation: big 4s;"
+                }
+            }
+        }
+        //判断元素是否出现在可视区域
+        function isVisble(btn) {
+            var scrollHeight = document.documentElement.scrollTop;
+                btnTop = btn.offsetTop;
+            if(btnTop < screenHeight + scrollHeight+400){
+                return true
+            }else{
+                return false
+            }
+        }
+    </script>
+</body>
+</html>
