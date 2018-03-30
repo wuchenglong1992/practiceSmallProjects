@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>iphoneX滚动特效</title>
+</head>
+<style>
+	body{
+		margin:0;
+	}
+	ul {
+		margin:0;
+		padding-left:10px;
+		font-size:16px;
+		width:100%;
+		height:100%;
+		overflow-y:scroll;
+		overflow-x:hidden;
+	}
+	li {
+		list-style:none;
+		padding:10px 0 5px 5px;
+	}
+	li+li {
+		border-top:1px solid #ccc;
+	}
+	.content {
+		position:relative;
+		width:600px;
+		height:300px;
+		margin:100px auto;
+		border:10px solid #000;
+		border-radius:30px;
+		overflow:hidden;
+	}
+	.screen {
+		position:absolute;
+		height:180px;
+		width:26px;
+		top:60px;
+		left:0px;
+		background-color:#000;
+		border-radius:0 30px 30px 0;
+	}
+	::-webkit-scrollbar{
+		padding-left:100px;
+	}
+</style>
+<body>
+	<div class="content">
+		<ul id="oUl">
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+			<li>这是一段测试的小文字</li>
+		</ul>
+		<div class="screen"></div>
+	</div>
+	<script>
+	/***
+	*	偏移量是50
+	*	离镜头上面高20px的时候开始偏移
+	*   bft 镜头头部-li底部
+	*	bfb 镜头底部-li底部
+	*	实现原理:
+	*		1.bft小于20px开始偏移,一直到-20px偏移结束(Math.abs(bft)<20),偏移量从0->50
+	*		2.bft<-20&&bfb>20 ,偏移量一直在50
+	*		3.bfb小于20开始偏移,一直到-20px偏移结束(Math.abs(bfb)<20),偏移量从50->0
+	*		4.其它情况,偏移量一直在0
+	*	
+	***/
+
+		var thresh = 20,
+			liOffset = 50,
+			aUl = document.getElementById('oUl'),
+			aLi = aUl.getElementsByTagName('li');
+			aScr = document.getElementsByClassName('screen')[0],
+			aScrRect = aScr.getBoundingClientRect();
+		aUl.addEventListener('scroll',function(){
+			move();
+		});
+		function move(){
+			[].forEach.call(aLi,function(btn,index){
+				var liRect = btn.getBoundingClientRect(),
+					bft = aScrRect.top - liRect.bottom,
+					bfb = aScrRect.bottom - liRect.bottom;
+					console.log(btn,bft,bfb);
+				if(Math.abs(bft)<=thresh){
+					btn.style.transform = "translateX("+ lerp(0,liOffset,cal(bft,thresh)) +"px)";
+				}else if(bft<=-thresh&&bfb>=thresh){
+					btn.style.transform = "translateX("+ liOffset +"px)";
+				}else if(Math.abs(bfb)<thresh){
+					btn.style.transform = "translateX("+ lerp(liOffset,0,cal(bfb,thresh)) +"px)";
+				}else{
+					btn.style.transform = "translateX(0px)";
+				}
+
+			})
+		}
+		move();
+	/****
+	* @差值算法
+	*	p1起始点
+	*	p2结束点
+	*	t时间比 0~1的值(0%~100%)
+	*	返回当前偏移的值
+	* @时间比
+	*	dis表示当前偏移的值
+	*	thr表示开始偏移的高度
+	*	返回时间比
+	*/
+	function lerp(p1,p2,t){  //差值算法
+		return p1+(p2-p1)*t
+	}
+	function cal(dis,thr){
+		return (thr-dis)/(thr*2)
+	}
+	</script>
+</body>
+</html>
